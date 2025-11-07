@@ -1,0 +1,39 @@
+---
+# tasks file for roles/gunicorn
+
+- name: Déployer service systemd gunicorn
+  ansible.builtin.template:
+    src: gunicorn.service.j2
+    dest: "/etc/systemd/system/{{ app_name }}.service"
+    mode: "0644"
+  notify:
+    - daemon-reload
+    - restart gunicorn
+
+# S'assurer que les handlers (daemon-reload) s'exécutent avant de gérer le service
+- name: Appliquer immédiatement les handlers
+  ansible.builtin.meta: flush_handlers
+
+- name: Activer + démarrer service
+  ansible.builtin.systemd:
+    name: "{{ app_name }}.service"
+    enabled: true
+    state: started
+
+- name: Attendre port Gunicorn ouvert
+  ansible.builtin.wait_for:
+    host: 127.0.0.1
+    port: "{{ listen_port }}"
+    delay: 2
+    timeout: 30
+
+- name: Vérifier healthz
+  ansible.builtin.uri:
+    url: "http://127.0.0.1:{{ listen_port }}/healthz"
+    status_code: 200
+    return_content: yes
+  register: health
+
+- name: Afficher health
+  ansible.builtin.debug:
+    var: health.json

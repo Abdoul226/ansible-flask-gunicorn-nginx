@@ -1,0 +1,32 @@
+---
+# tasks file for roles/nginx
+- name: Installer Nginx
+  ansible.builtin.apt:
+    name: nginx
+    state: present
+
+- name: Déployer vhost applicatif
+  ansible.builtin.template:
+    src: app.conf.j2
+    dest: /etc/nginx/sites-available/{{ app_name }}.conf
+    mode: '0644'
+  notify: reload nginx
+
+- name: Activer vhost
+  ansible.builtin.file:
+    src: /etc/nginx/sites-available/{{ app_name }}.conf
+    dest: /etc/nginx/sites-enabled/{{ app_name }}.conf
+    state: link
+  notify: reload nginx
+
+- name: Désactiver default si existant
+  ansible.builtin.file:
+    path: /etc/nginx/sites-enabled/default
+    state: absent
+  notify: reload nginx
+
+- name: S’assurer que Nginx tourne
+  ansible.builtin.service:
+    name: nginx
+    state: started
+    enabled: true

@@ -1,0 +1,24 @@
+---
+- name: Vérifications post-déploiement
+  hosts: web
+  become: true
+  tasks:
+    - name: Vérifier service gunicorn
+      ansible.builtin.shell: |
+        systemctl is-active {{ app_name }}.service
+      register: gunicorn_status
+      changed_when: false
+
+    - name: Afficher statut gunicorn
+      ansible.builtin.debug:
+        var: gunicorn_status.stdout
+
+    - name: Tester endpoint HTTP local
+      ansible.builtin.uri:
+        url: http://127.0.0.1/
+        return_content: yes
+      register: http_result
+
+    - name: Afficher extrait réponse
+      ansible.builtin.debug:
+        msg: "{{ http_result.content | regex_search('Hello.*', multiline=True) }}"

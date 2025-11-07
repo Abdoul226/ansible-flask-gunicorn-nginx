@@ -1,0 +1,32 @@
+---
+# tasks file for roles/common
+- name: Mettre à jour l’APT cache
+  ansible.builtin.apt:
+    update_cache: yes
+    cache_valid_time: 3600
+
+- name: Installer paquets système
+  ansible.builtin.apt:
+    name: "{{ os_packages }}"
+    state: present
+
+- name: Créer groupe applicatif
+  ansible.builtin.group:
+    name: "{{ app_group }}"
+    state: present
+
+- name: Créer utilisateur applicatif
+  ansible.builtin.user:
+    name: "{{ app_user }}"
+    group: "{{ app_group }}"
+    system: yes
+    shell: /usr/sbin/nologin
+    create_home: no
+
+- name: Créer répertoire application
+  ansible.builtin.file:
+    path: "{{ app_dir }}"
+    state: directory
+    owner: "{{ app_user }}"
+    group: "{{ app_group }}"
+    mode: '0755'

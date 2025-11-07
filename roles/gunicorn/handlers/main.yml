@@ -1,0 +1,11 @@
+---
+# handlers file for roles/gunicorn
+- name: daemon-reload
+  ansible.builtin.systemd:
+    daemon_reload: true
+
+- name: restart gunicorn
+  ansible.builtin.service:
+    name: "{{ app_name }}"
+    state: restarted
+

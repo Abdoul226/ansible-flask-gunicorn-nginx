@@ -1,0 +1,21 @@
+---
+# tasks file for roles/python
+- name: Installer Python, pip & venv
+  ansible.builtin.apt:
+    name:
+      - "{{ python_pkg }}"
+      - "{{ pip_pkg }}"
+      - "{{ venv_pkg }}"
+    state: present
+
+- name: Créer venv
+  ansible.builtin.command:
+    cmd: "{{ python_pkg }} -m venv {{ venv_dir }}"
+    creates: "{{ venv_dir }}/bin/activate"
+
+- name: Upgrade pip + wheel + setuptools
+  ansible.builtin.command:
+    cmd: "{{ venv_dir }}/bin/pip install --upgrade pip wheel setuptools"
+  changed_when: "'Successfully installed' in (ansible_facts.stdout|default(''))"
+  args:
+    warn: false

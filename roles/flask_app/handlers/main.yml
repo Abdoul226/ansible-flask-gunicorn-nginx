@@ -1,0 +1,8 @@
+---
+# handlers file for roles/flask_app
+- name: restart gunicorn
+  ansible.builtin.service:
+    name: "{{ app_name }}.service"
+    state: restarted
+  listen: "restart gunicorn"
+  failed_when: false # Premier déploiement, service peut ne pas exister encore

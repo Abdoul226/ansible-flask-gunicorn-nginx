@@ -1,0 +1,12 @@
+---
+- name: Déploiement Flask + Gunicorn + Nginx
+  hosts: web
+  become: true
+  vars_files:
+    - ../group_vars/web.yml
+  roles:
+    - role: common
+    - role: python
+    - role: flask_app
+    - role: gunicorn
+    - role: nginx
