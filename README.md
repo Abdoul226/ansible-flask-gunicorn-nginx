@@ -64,7 +64,7 @@ Modifie `inventory.ini` pour y placer l’adresse IP et l’utilisateur SSH de t
 
 ```ini
 [web]
-node01 ansible_host=192.168.56.21 ansible_user=ubuntu
+node01 ansible_host=192.168.56.21 ansible_user=vagrant
 ```
 
 Assure-toi d’avoir un accès SSH fonctionnel depuis ta machine de contrôle.
@@ -168,36 +168,6 @@ Pour automatiser les déploiements via GitLab CI ou GitHub Actions :
 
 ---
 
-## 🧪 Lab local (optionnel)
-
-Utilise le **Vagrantfile** fourni pour tester localement :
-
-```bash
-vagrant up
-vagrant ssh controller
-cd ~/ansible-flask-gunicorn-nginx
-make setup
-```
-
-IP du node : `192.168.56.21`
-
----
-
-## 🧱 Arborescence Ansible recommandée
-
-```
-roles/
- ├── common
- ├── python
- ├── flask_app
- ├── gunicorn
- └── nginx
-```
-
-Chaque rôle est isolé et réutilisable dans d’autres projets.
-
----
-
 ## ❗ Dépannage rapide
 
 | Problème                | Commande utile                         |
@@ -220,6 +190,3 @@ Chaque rôle est isolé et réutilisable dans d’autres projets.
 ## 📜 Licence
 
 Projet libre à usage personnel, pédagogique ou professionnel.
-
-Crédit : conçu pour un **portfolio DevOps** démontrant la maîtrise d’**Ansible**, **Nginx**, **Gunicorn**, et **Flask**. 🚀
-
